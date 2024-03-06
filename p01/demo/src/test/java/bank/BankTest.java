@@ -80,7 +80,7 @@ class BankTest {
     }
 
     @AfterAll
-    static void tearDown() {
+    static void mainExecute() {
         BankMain main = new BankMain();
         main.main(null);
     }
