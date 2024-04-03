@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DoubleLinkedList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">junit5-mps-uma</a> &gt; <a href="index.source.html" class="el_package">coladoble</a> &gt; <span class="el_source">DoubleLinkedList.java</span></div><h1>DoubleLinkedList.java</h1><pre class="source lang-java linenums">/*
+AUTORES: Manuel Jesús Jerez Sánchez y Pablo Astudillo Fraga
+*/
+
+package coladoble;
+
+import java.util.Comparator;
+
+public class DoubleLinkedList&lt;T&gt; implements DoubleLinkedQueue&lt;T&gt; {
+
+    private LinkedNode&lt;T&gt; first;
+    private LinkedNode&lt;T&gt; last;
+    private int size;
+
+<span class="fc" id="L15">    public DoubleLinkedList() {</span>
+<span class="fc" id="L16">        first = null;</span>
+<span class="fc" id="L17">        last = null;</span>
+<span class="fc" id="L18">        size = 0;</span>
+<span class="fc" id="L19">    }</span>
+
+    @Override
+    public void prepend(T value) {
+<span class="fc" id="L23">        LinkedNode&lt;T&gt; node = new LinkedNode&lt;&gt;(value,null,null);</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if(size == 0)</span>
+        {
+<span class="fc" id="L26">            first = node;</span>
+<span class="fc" id="L27">            last = node;</span>
+<span class="fc" id="L28">        }</span>
+        else
+        {
+<span class="fc" id="L31">            LinkedNode&lt;T&gt; aux = first;</span>
+<span class="fc" id="L32">            aux.setPrevious(node);</span>
+<span class="fc" id="L33">            node.setNext(aux);</span>
+<span class="fc" id="L34">            first = node;</span>
+        }
+<span class="fc" id="L36">        size++;</span>
+<span class="fc" id="L37">    }</span>
+
+    @Override
+    public void append(T value) {
+<span class="fc" id="L41">        LinkedNode&lt;T&gt; node = new LinkedNode&lt;&gt;(value,null,null);</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if(size == 0)</span>
+        {
+<span class="fc" id="L44">            first = node;</span>
+<span class="fc" id="L45">            last = node;</span>
+<span class="fc" id="L46">        }</span>
+        else
+        {
+<span class="fc" id="L49">            LinkedNode&lt;T&gt; aux = last;</span>
+<span class="fc" id="L50">            aux.setNext(node);</span>
+<span class="fc" id="L51">            node.setPrevious(aux);</span>
+<span class="fc" id="L52">            last = node;</span>
+        }
+<span class="fc" id="L54">        size++;</span>
+<span class="fc" id="L55">    }</span>
+
+    @Override
+    public void deleteFirst() {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if(size == 0)</span>
+        {
+<span class="fc" id="L61">            throw new DoubleLinkedQueueException(&quot;No se puede borrar en una lista vacia&quot;);</span>
+        }
+        else
+        {
+<span class="fc" id="L65">            first = first.getNext();</span>
+<span class="fc" id="L66">            size--;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            if(size == 0)</span>
+<span class="fc" id="L68">                last = null;</span>
+        }
+<span class="fc" id="L70">    }</span>
+
+    @Override
+    public void deleteLast() {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if(size == 0)</span>
+        {
+<span class="fc" id="L76">            throw new DoubleLinkedQueueException(&quot;No se puede borrar en una lista vacia&quot;);</span>
+        }
+        else
+        {
+<span class="fc" id="L80">            last = last.getPrevious();</span>
+<span class="fc" id="L81">            size--;</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            if(size == 0)</span>
+<span class="fc" id="L83">                first = null;</span>
+        }
+<span class="fc" id="L85">    }</span>
+
+    @Override
+    public T first() {
+<span class="fc" id="L89">        return first.getItem();</span>
+    }
+
+    @Override
+    public T last() {
+<span class="fc" id="L94">        return last.getItem();</span>
+    }
+
+    @Override
+    public int size() {
+<span class="fc" id="L99">        return size;</span>
+    }
+    /* 
+    @Override
+    public T get(int index) {
+        if(index &lt; 0)
+            throw new DoubleLinkedQueueException(&quot;No hay indice negativo&quot;);
+        else {
+            int i = 0;
+            LinkedNode&lt;T&gt; node = first;
+
+            while (i &lt; index) {
+                node = node.getNext();
+                index++;
+            }
+
+            return node.getItem();
+        }
+    }
+
+    @Override
+    public boolean contains(T value) {
+        LinkedNode&lt;T&gt; node = first;
+
+        while(node != null &amp;&amp; !node.getItem().equals(value))
+            node = node.getNext();
+
+        return node != null;
+    }
+
+    @Override
+    public void remove(T value) {
+        if(!contains(value))
+            throw new DoubleLinkedQueueException(&quot;No existe este valor en la cola doble&quot;);
+        else {
+            LinkedNode&lt;T&gt; prev = null;
+            LinkedNode&lt;T&gt; node = first;
+
+            while (!node.getItem().equals(value)) {
+                prev = node;
+                node = node.getNext();
+            }
+
+            if (node.isFirstNode()) {
+                node.getNext().setPrevious(null);
+                first = node.getNext();
+            } else if (node.isLastNode()) {
+                prev.setNext(null);
+                last = prev;
+            } else {
+                node.getNext().setPrevious(prev);
+                prev.setNext(node.getNext());
+            }
+        }
+    }
+
+    @Override
+    public void sort(Comparator&lt;? super T&gt; comparator) {
+        if (size &lt;= 1) return;
+
+        LinkedNode&lt;T&gt; node = first;
+
+        while (node != null) {
+            LinkedNode&lt;T&gt; minNode = node;
+            LinkedNode&lt;T&gt; aux = node.getNext();
+            while (aux != null) {
+                if (comparator.compare(aux.getItem(), minNode.getItem()) &lt; 0) {
+                    minNode = aux;
+                }
+                aux = aux.getNext();
+            }
+
+            T auxItem = node.getItem();
+            node.setItem(minNode.getItem());
+            minNode.setItem(auxItem);
+            node = node.getNext();
+        }
+    }
+    */
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
